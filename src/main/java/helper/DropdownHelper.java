@@ -39,6 +39,7 @@ public class DropdownHelper {
     }
 
     public List<String> getAllDropdownValues(WebElement element){
+        select = new Select(element);
         List<WebElement> elementList = select.getOptions();
         List<String> valueList = new LinkedList<String>();
         for (WebElement e : elementList){
@@ -46,5 +47,4 @@ public class DropdownHelper {
         }
         return valueList;
     }
-
 }

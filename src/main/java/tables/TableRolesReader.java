@@ -14,14 +14,14 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-public class Roles {
+public class TableRolesReader {
 
     private String nameTypes;
 
-    public static ArrayList<Roles> getRolesFromTable(WebDriver driver){
+    public static ArrayList<TableRolesReader> getRolesFromTable(WebDriver driver){
         List<WebElement> rows = driver.findElements(By.xpath("//tr[@role='row']"));
 
-        ArrayList<Roles> roles = new ArrayList<>();
+        ArrayList<TableRolesReader> roles = new ArrayList<>();
 
         int step = 0;
 
@@ -32,7 +32,7 @@ public class Roles {
             List<WebElement> cells = row.findElements(By.xpath("//td[@class=' tl-align-left']"));
             String nameType = cells.get(step).getText();
             step++;
-            roles.add(new Roles(nameType));
+            roles.add(new TableRolesReader(nameType));
         }
 
         return roles;
