@@ -48,14 +48,9 @@ public class BaseTest {
         role.setNameTypes(userTypeName);
 
         browserManager.openByNavigate("https://app.talentlms.com/login");
-        /*loginPage.enterDomain("fall2023")
+        loginPage.enterDomain("fall2023")
                 .enterUsername("nurik9816")
                 .enterPassword("qwerty12345")
-                .clickLoginButton();*/
-
-        loginPage.enterDomain(domain)
-                .enterUsername("timka555-player@mail.ru")
-                .enterPassword("1Test8")
                 .clickLoginButton();
     }
 
