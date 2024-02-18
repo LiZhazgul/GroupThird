@@ -7,6 +7,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.List;
+import java.util.Random;
 
 public class AddUserTypePage {
     public AddUserTypePage(){
@@ -25,11 +26,40 @@ public class AddUserTypePage {
     @FindBy(xpath = "//div[@class='select2-result-label']")
     public List<WebElement> listSelectUserTypes;
 
-    public void randomChoiceUserTypes(List<WebElement> listSelectUserTypes){
-        AddUserTypePage addUserTypePage = new AddUserTypePage();
-        int choice = (int) (Math.random() * listSelectUserTypes.size());
+    @FindBy(xpath = "//span[@class='dynatree-node dynatree-folder dynatree-expanded dynatree-has-children dynatree-exp-e dynatree-ico-ef']/span[@class='dynatree-checkbox']")
+    public List<WebElement> permissionList;
 
-        addUserTypePage.fieldSelectUserType.click();
+    @FindBy(xpath = "//span[@class='dynatree-node dynatree-folder dynatree-expanded dynatree-has-children dynatree-lastsib dynatree-exp-el dynatree-ico-ef']/span[@class='dynatree-checkbox']")
+    public WebElement permissionGeneral;
+
+    @FindBy(xpath = "//input[@id='user-type-save-button']")
+    public WebElement saveBtn;
+
+
+
+    public AddUserTypePage randomChoiceUserTypes(int choice) {
+        fieldSelectUserType.click();
         listSelectUserTypes.get(choice).click();
+        return this;
+    }
+
+    public AddUserTypePage choosePermission(){
+        switch (fieldSelectUserType.getText()){
+            case "Administrator":
+                permissionList.get(0).click();
+                permissionGeneral.click();
+                break;
+            case "Instructor":
+                permissionList.get(1).click();
+                permissionGeneral.click();
+                break;
+            case "Learner":
+                permissionList.get(2).click();
+                permissionGeneral.click();
+                break;
+
+        }
+
+        return this;
     }
 }

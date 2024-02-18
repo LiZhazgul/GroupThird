@@ -3,8 +3,10 @@ package uiTest;
 import driver.Driver;
 import helper.BrowserManager;
 import helper.WebElementHelper;
-import io.qameta.allure.Feature;
+import io.qameta.allure.*;
+import io.qameta.allure.testng.Tag;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -15,6 +17,7 @@ import pages.AddUserTypePage;
 import pages.LoginPage;
 import tables.TableRolesReader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BaseTest {
@@ -23,8 +26,11 @@ public class BaseTest {
     protected WebElementHelper webElementHelper;
     protected LoginPage loginPage;
     protected BrowserManager browserManager;
-
-
+    protected String domain;
+    protected String userTypeName;
+    protected AddUserTypePage addUserTypePage;
+    protected List<TableRolesReader> roles;
+    protected TableRolesReader role;
 
     @BeforeClass(alwaysRun = true, description = "Launch browser and log in on talentLMS website")
     public void setUp() {
@@ -32,77 +38,111 @@ public class BaseTest {
         browserManager = new BrowserManager(driver);
         webElementHelper = new WebElementHelper();
         loginPage = new LoginPage();
+        addUserTypePage = new AddUserTypePage();
+
+        roles = new ArrayList<>();
+        role = new TableRolesReader();
+
+        domain = "timka";
+        userTypeName = "prob";
+        role.setNameTypes(userTypeName);
+
         browserManager.openByNavigate("https://app.talentlms.com/login");
-        loginPage.enterDomain("fall2023")
+        /*loginPage.enterDomain("fall2023")
                 .enterUsername("nurik9816")
                 .enterPassword("qwerty12345")
+                .clickLoginButton();*/
+
+        loginPage.enterDomain(domain)
+                .enterUsername("timka555-player@mail.ru")
+                .enterPassword("1Test8")
                 .clickLoginButton();
-
-
     }
 
-    @Test (priority = 1, description = "Checking authorization successful")
-    @Feature("Demoqa webTable")
+    @Test (priority = 1)
+    @Feature("talentLMS Home Page")
+    @Description("Checking authorization successful")
+    @Owner("Timur")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("TL-014")
+    @Tag("Smoke")
     public void websiteLoginTest(){
-        String actualElement = driver.findElement(By.xpath("//div[@class='tl-title tl-ellipsis']")).getText().trim();
+        String actualTitle = driver.findElement(By.xpath("//div[@class='tl-title tl-ellipsis']")).getText().trim();
+        String expectedTitle = "Home";
 
-        String expectedElement = "Home";
-
-        Assert.assertEquals(expectedElement, actualElement);
+        Assert.assertEquals(expectedTitle, actualTitle);
     }
 
-    @Test (priority = 2, description = "Checking that the link to the desired menu works")
+    @Test (priority = 2)
+    @Feature("talentLMS User Types")
+    @Description("Checking that the link to the desired menu works")
+    @Owner("Timur")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("TL-014")
+    @Tag("Smoke")
     public void goToPageUserTypesTest(){
-        WebElement textLinkUserTypes = driver.findElement(By.xpath("//div[@class='tl-bold-link']/a[@href='https://fall2023.talentlms.com/acl/index/gridPref:reset']"));
-
+        WebElement textLinkUserTypes = driver.findElement(By.xpath("//div[@class='tl-bold-link']/a[@href='https://" + domain + ".talentlms.com/acl/index/gridPref:reset']"));
         webElementHelper.click(textLinkUserTypes);
 
-        String actualElement = driver.findElement(By.xpath("//div[@class='tl-title tl-ellipsis']")).getText().trim();
+        String actualTitle = driver.findElement(By.xpath("//div[@class='tl-title tl-ellipsis']")).getText().trim();
+        String expectedTitle = "Home / User types";
 
-        String expectedElement = "Home / User types";
-
-        Assert.assertEquals(expectedElement, actualElement);
+        Assert.assertEquals(expectedTitle, actualTitle);
     }
 
-    /*@Test(priority = 3, description = "Checking the upload of data from the user roles table")
+    @Test(priority = 3)
+    @Feature("talentLMS User Types")
+    @Description("Checking the upload of data from the user roles table")
+    @Owner("Timur")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("TL-014")
+    @Tag("Smoke")
     public void outDataTable(){
-        List<TableRolesReader> roles = TableRolesReader.getRolesFromTable(driver);
-        TableRolesReader role = new TableRolesReader();
+        roles = TableRolesReader.getRolesFromTable(driver);
 
-        role.setNameTypes("test");
-
-        //Assert.assertEquals(roles.contains(role), true);
-
-        roles.forEach(System.out::println);
-    }*/
-
-    @Test(priority = 4, description = "Adding a new role to a table")
-    public void addRoleUserInTableTest() throws InterruptedException {
-        AddUserTypePage addUserTypePage = new AddUserTypePage();
-
-        webElementHelper.click(addUserTypePage.addUserTypeBtn);
-
-        webElementHelper.sendKeys(addUserTypePage.nameUserTypeField, "test");
-
-        addUserTypePage.randomChoiceUserTypes(addUserTypePage.listSelectUserTypes);
-
-        addUserTypePage.fieldSelectUserType.click();
+        Assert.assertEquals(roles.contains(role), false);
     }
 
+    @Test(priority = 4)
+    @Feature("talentLMS User Types")
+    @Description("Adding a new role to a table")
+    @Owner("Timur")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("TL-014")
+    @Tag("Smoke")
+    public void addRoleUserInTableTest(){
+        int indexUserType = 2;
 
-    /*@Test(priority = 9, description = "Checking the table information search string")
+        webElementHelper.click(addUserTypePage.addUserTypeBtn)
+                        .sendKeys(addUserTypePage.nameUserTypeField, userTypeName);
+
+        addUserTypePage.randomChoiceUserTypes(indexUserType)
+                       .choosePermission()
+                       .saveBtn.click();
+
+        roles = TableRolesReader.getRolesFromTable(driver);
+
+        Assert.assertEquals(roles.contains(role), true);
+    }
+
+    @Test(priority = 9)
+    @Feature("talentLMS User Types")
+    @Description("Checking the table information search string")
+    @Owner("Timur")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("TL-014")
+    @Tag("Smoke")
     public void searchFieldTest() throws InterruptedException {
         WebElement searchField = driver.findElement(By.xpath("//input[@class='tl-grid-search-input']"));
+        int amountElements = 0;
 
         String searchWord = "tr";
 
         webElementHelper.sendKeys(searchField, searchWord);
 
-        Thread.sleep(4000);
+        Thread.sleep(1000);
 
-        List<TableRolesReader> roles = TableRolesReader.getRolesFromTable(driver);
-
-        int amountElements = 0;
+        roles = TableRolesReader.getRolesFromTable(driver);
 
         for(int i = 0; i < roles.size(); i++){
             if(roles.get(i).getNameTypes().toLowerCase().contains(searchWord.toLowerCase())){
@@ -110,16 +150,14 @@ public class BaseTest {
             }
         }
 
-        webElementHelper.sendKeys(searchField, "");
+        searchField.clear();
+        searchField.sendKeys(Keys.ENTER);
 
         Assert.assertEquals(amountElements == roles.size(), true);
-    }*/
-
+    }
 
     @AfterClass(alwaysRun = true)
     public void tearDown() {
       //  Driver.closeDriver();
-
     }
-
 }
