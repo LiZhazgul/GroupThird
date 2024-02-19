@@ -6,6 +6,7 @@ import helper.WebElementHelper;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import pages.ImportPage;
 import pages.LoginPage;
 
 public class BaseTest {
@@ -14,6 +15,7 @@ public class BaseTest {
     protected WebElementHelper webElementHelper;
     protected LoginPage loginPage;
     protected BrowserManager browserManager;
+    protected ImportPage importPage;
 
     @BeforeClass(alwaysRun = true)
     public void setUp() {
@@ -21,9 +23,10 @@ public class BaseTest {
         browserManager = new BrowserManager(driver);
         webElementHelper = new WebElementHelper();
         loginPage = new LoginPage();
+        importPage=new ImportPage();
         browserManager.openByNavigate("https://app.talentlms.com/login");
-        loginPage.enterDomain("fall2023")
-                .enterUsername("nurik9816")
+        loginPage.enterDomain("ezelfall2023")
+                .enterUsername("akezel1711 ")
                 .enterPassword("qwerty12345")
                 .clickLoginButton();
     }
