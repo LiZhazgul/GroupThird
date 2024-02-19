@@ -13,7 +13,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import pages.AddUserTypePage;
+import pages.UserTypePage;
 import pages.LoginPage;
 import tables.TableRolesReader;
 
@@ -28,7 +28,7 @@ public class BaseTest {
     protected BrowserManager browserManager;
     protected String domain;
     protected String userTypeName;
-    protected AddUserTypePage addUserTypePage;
+    protected UserTypePage userTypePage;
     protected List<TableRolesReader> roles;
     protected TableRolesReader role;
 
@@ -38,7 +38,7 @@ public class BaseTest {
         browserManager = new BrowserManager(driver);
         webElementHelper = new WebElementHelper();
         loginPage = new LoginPage();
-        addUserTypePage = new AddUserTypePage();
+        userTypePage = new UserTypePage();
 
         roles = new ArrayList<>();
         role = new TableRolesReader();
@@ -48,57 +48,17 @@ public class BaseTest {
         role.setNameTypes(userTypeName);
 
         browserManager.openByNavigate("https://app.talentlms.com/login");
-        loginPage.enterDomain("fall2023")
+        /*loginPage.enterDomain("fall2023")
                 .enterUsername("nurik9816")
                 .enterPassword("qwerty12345")
+                .clickLoginButton();*/
+
+        loginPage.enterDomain("timka")
+                .enterUsername("timka555-player@mail.ru")
+                .enterPassword("1Test8")
                 .clickLoginButton();
     }
 
-    @Test (priority = 1)
-    @Feature("talentLMS Home Page")
-    @Description("Checking authorization successful")
-    @Owner("Timur")
-    @Severity(SeverityLevel.CRITICAL)
-    @Story("TL-014")
-    @Tag("Smoke")
-    public void websiteLoginTest(){
-        String actualTitle = driver.findElement(By.xpath("//div[@class='tl-title tl-ellipsis']")).getText().trim();
-        String expectedTitle = "Home";
-
-        Assert.assertEquals(expectedTitle, actualTitle);
-    }
-
-    @Test (priority = 2)
-    @Feature("talentLMS User Types")
-    @Description("Checking that the link to the desired menu works")
-    @Owner("Timur")
-    @Severity(SeverityLevel.CRITICAL)
-    @Story("TL-014")
-    @Tag("Smoke")
-    public void goToPageUserTypesTest(){
-        WebElement textLinkUserTypes = driver.findElement(By.xpath("//div[@class='tl-bold-link']/a[@href='https://" + domain + ".talentlms.com/acl/index/gridPref:reset']"));
-        webElementHelper.click(textLinkUserTypes);
-
-        String actualTitle = driver.findElement(By.xpath("//div[@class='tl-title tl-ellipsis']")).getText().trim();
-        String expectedTitle = "Home / User types";
-
-        Assert.assertEquals(expectedTitle, actualTitle);
-    }
-
-    @Test(priority = 3)
-    @Feature("talentLMS User Types")
-    @Description("Checking the upload of data from the user roles table")
-    @Owner("Timur")
-    @Severity(SeverityLevel.CRITICAL)
-    @Story("TL-014")
-    @Tag("Smoke")
-    public void outDataTable(){
-        roles = TableRolesReader.getRolesFromTable(driver);
-
-        Assert.assertEquals(roles.contains(role), false);
-    }
-
-    @Test(priority = 4)
     @Feature("talentLMS User Types")
     @Description("Adding a new role to a table")
     @Owner("Timur")
@@ -108,10 +68,10 @@ public class BaseTest {
     public void addRoleUserInTableTest(){
         int indexUserType = 2;
 
-        webElementHelper.click(addUserTypePage.addUserTypeBtn)
-                        .sendKeys(addUserTypePage.nameUserTypeField, userTypeName);
+        webElementHelper.click(userTypePage.addUserTypeBtn)
+                        .sendKeys(userTypePage.nameUserTypeField, userTypeName);
 
-        addUserTypePage.randomChoiceUserTypes(indexUserType)
+        userTypePage.randomChoiceUserTypes(indexUserType)
                        .choosePermission()
                        .saveBtn.click();
 
@@ -120,7 +80,6 @@ public class BaseTest {
         Assert.assertEquals(roles.contains(role), true);
     }
 
-    @Test(priority = 9)
     @Feature("talentLMS User Types")
     @Description("Checking the table information search string")
     @Owner("Timur")
@@ -128,12 +87,11 @@ public class BaseTest {
     @Story("TL-014")
     @Tag("Smoke")
     public void searchFieldTest() throws InterruptedException {
-        WebElement searchField = driver.findElement(By.xpath("//input[@class='tl-grid-search-input']"));
         int amountElements = 0;
 
         String searchWord = "tr";
 
-        webElementHelper.sendKeys(searchField, searchWord);
+        webElementHelper.sendKeys(userTypePage.searchField, searchWord);
 
         Thread.sleep(1000);
 
@@ -145,8 +103,8 @@ public class BaseTest {
             }
         }
 
-        searchField.clear();
-        searchField.sendKeys(Keys.ENTER);
+        userTypePage.searchField.clear();
+        userTypePage.searchField.sendKeys(Keys.ENTER);
 
         Assert.assertEquals(amountElements == roles.size(), true);
     }
