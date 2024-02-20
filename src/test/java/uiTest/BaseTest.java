@@ -51,7 +51,7 @@ public class BaseTest {
     protected RewardsBox rewardsBox;
     protected LeaderboardBox leaderboardBox;
     protected UsersPage usersPage;
-    protected UserTypesPage userTypePage;
+    protected UserTypesPage userTypesPage;
     protected List<String> listUserTypes;
 
     @BeforeClass(alwaysRun = true)
@@ -76,7 +76,7 @@ public class BaseTest {
         levelsBox = new LevelsBox();
         rewardsBox = new RewardsBox();
         leaderboardBox = new LeaderboardBox();
-        userTypePage = new UserTypesPage();
+        userTypesPage = new UserTypesPage();
         listUserTypes = new ArrayList<>();
         browserManager.openByNavigate(LOGIN.toString());
         loginPage.enterDomain(getValue("domain"))

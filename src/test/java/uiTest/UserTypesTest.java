@@ -5,13 +5,14 @@ import io.qameta.allure.testng.Tag;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static pages.TalentLMS_PAGES.USER_TYPES_PAGE;
 import static pages.TalentLMS_PAGES.ADD_USER_TYPE_PAGE;
 
 public class UserTypesTest extends BaseTest {
+    private String nameUserType;
+    private int indexUserType;
 
      @Test
      @Feature("talentLMS User Types")
@@ -21,23 +22,14 @@ public class UserTypesTest extends BaseTest {
      @Story("TL-014")
      @Tag("Negative")
      public void addDuplicateUserTypeInTableTest(){
-         browserManager.openByNavigate("USER_TYPES_PAGE.toString()");
-         String duplicateUserTypeName = "duplicate";
-         int indexUserType = 1;
+         browserManager.openByNavigate(ADD_USER_TYPE_PAGE.toString());
 
-         userTypePage.addUserTypeBtnClick()
-                     .fillUpNameUserType(duplicateUserTypeName)
-                     .choiceUserTypes(indexUserType)
-                     .choosePermission(indexUserType)
-                     .saveBtnClick();
+         nameUserType = "duplicate";
+         indexUserType = 1;
 
-         userTypePage.addUserTypeBtnClick()
-                     .fillUpNameUserType(duplicateUserTypeName)
-                     .choiceUserTypes(indexUserType)
-                     .choosePermission(indexUserType)
-                     .saveBtnClick();
+         userTypesPage.addNotUniqueUserType(nameUserType, indexUserType);
 
-         String actualResult = userTypePage.warningTypeNameRepeated.getText().trim();
+         String actualResult = userTypesPage.warningTextTypeNameRepeated.getText().trim();
          String expectedResult = "A user type with this name already exists";
 
          Assert.assertEquals(actualResult, expectedResult);
@@ -53,17 +45,12 @@ public class UserTypesTest extends BaseTest {
     public void addUserTypeInTableTest(){
         browserManager.openByNavigate(USER_TYPES_PAGE.toString());
 
-        String userTypeName = "testUserTypeName";
+        nameUserType = "testUserTypeName";
+        indexUserType = 2;
 
-        int indexUserType = 2;
+        userTypesPage.addUserType(nameUserType, indexUserType);
 
-        userTypePage.addUserTypeBtnClick()
-                    .fillUpNameUserType(userTypeName)
-                    .choiceUserTypes(indexUserType)
-                    .choosePermission(indexUserType)
-                    .saveBtnClick();
-
-        Assert.assertEquals(userTypePage.checkUserInTable(driver, userTypeName), true);
+        Assert.assertEquals(userTypesPage.checkUserInTable(driver, nameUserType), true);
     }
 
     @Test
@@ -78,15 +65,15 @@ public class UserTypesTest extends BaseTest {
 
         String searchWord = "admin";
 
-        webElementHelper.sendKeys(userTypePage.searchField, searchWord);
+        webElementHelper.sendKeys(userTypesPage.searchField, searchWord);
 
         Thread.sleep(1000);
 
-        listUserTypes = userTypePage.getRolesFromTable(driver);
+        listUserTypes = userTypesPage.getRolesFromTable(driver);
 
-        userTypePage.searchFieldClear();
+        userTypesPage.searchFieldClear();
 
-        Assert.assertEquals(userTypePage.countingRowsInTable(listUserTypes, searchWord) == listUserTypes.size(), true);
+        Assert.assertEquals(userTypesPage.countingRowsInTable(listUserTypes, searchWord) == listUserTypes.size(), true);
     }
 
     @Test
@@ -102,13 +89,13 @@ public class UserTypesTest extends BaseTest {
         List<String> beforeSortUserTypesName;
         List<String> afterSortUserTypesName;
 
-        beforeSortUserTypesName = userTypePage.getRolesFromTable(driver);
+        beforeSortUserTypesName = userTypesPage.getRolesFromTable(driver);
 
-        webElementHelper.click(userTypePage.filterUserTypeNameInTableUserType);
+        webElementHelper.click(userTypesPage.filterUserTypeNameInTableUserType);
 
-        afterSortUserTypesName = userTypePage.getRolesFromTable(driver);
+        afterSortUserTypesName = userTypesPage.getRolesFromTable(driver);
 
-        Assert.assertEquals(userTypePage.checkFilterUserTypeNameInTableUserType(beforeSortUserTypesName, afterSortUserTypesName), true);
+        Assert.assertEquals(userTypesPage.checkFilterUserTypeNameInTableUserType(beforeSortUserTypesName, afterSortUserTypesName), true);
     }
 
 }

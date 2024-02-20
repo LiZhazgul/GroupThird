@@ -35,10 +35,10 @@ public class UserTypesPage {
     public List<WebElement> listSelectUserTypes;
 
     @FindBy(xpath = "//span[@class='dynatree-node dynatree-folder dynatree-expanded dynatree-has-children dynatree-exp-e dynatree-ico-ef']/span[@class='dynatree-checkbox']")
-    public List<WebElement> permissionList;
+    public List<WebElement> listPermissionCheckbox;
 
     @FindBy(xpath = "//span[@class='dynatree-node dynatree-folder dynatree-expanded dynatree-has-children dynatree-lastsib dynatree-exp-el dynatree-ico-ef']/span[@class='dynatree-checkbox']")
-    public WebElement permissionGeneral;
+    public WebElement permissionCheckboxGeneral;
 
     @FindBy(xpath = "//input[@id='user-type-save-button']")
     public WebElement saveBtn;
@@ -47,7 +47,7 @@ public class UserTypesPage {
     public WebElement searchField;
 
     @FindBy(xpath = "//span[@id='user-type-name-help-block']/span[@class='help-inline']")
-    public WebElement warningTypeNameRepeated;
+    public WebElement warningTextTypeNameRepeated;
 
     @FindBy(xpath = "//th[@class='tl-align-left sorting_asc']")
     public WebElement filterUserTypeNameInTableUserType;
@@ -63,15 +63,13 @@ public class UserTypesPage {
         return this;
     }
 
-    public UserTypesPage saveBtnClick() {
+    public void saveBtnClick() {
         webElementHelper.click(saveBtn);
-        return this;
     }
 
-    public UserTypesPage searchFieldClear() {
+    public void searchFieldClear() {
         searchField.clear();
         searchField.sendKeys(Keys.ENTER);
-        return this;
     }
 
     public boolean checkUserInTable(WebDriver driver, String  userNameType) {
@@ -81,6 +79,19 @@ public class UserTypesPage {
             }
         }
         return false;
+    }
+
+    public void addNotUniqueUserType(String userTypeName, int  indexPermission) {
+        addUserType(userTypeName, indexPermission);
+        addUserType(userTypeName, indexPermission);
+    }
+
+    public void addUserType (String userTypeName, int  indexPermission) {
+        addUserTypeBtnClick();
+        fillUpNameUserType(userTypeName);
+        choiceUserTypes(indexPermission);
+        choosePermission(indexPermission);
+        saveBtnClick();
     }
 
 
@@ -126,16 +137,16 @@ public class UserTypesPage {
     public UserTypesPage choosePermission(int choose){
         switch (choose){
             case 0:
-                permissionList.get(0).click();
-                permissionGeneral.click();
+                listPermissionCheckbox.get(0).click();
+                permissionCheckboxGeneral.click();
                 break;
             case 1:
-                permissionList.get(1).click();
-                permissionGeneral.click();
+                listPermissionCheckbox.get(1).click();
+                permissionCheckboxGeneral.click();
                 break;
             case 2:
-                permissionList.get(2).click();
-                permissionGeneral.click();
+                listPermissionCheckbox.get(2).click();
+                permissionCheckboxGeneral.click();
                 break;
 
         }
