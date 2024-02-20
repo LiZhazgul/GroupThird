@@ -52,15 +52,20 @@ public class UserTypesPage {
     @FindBy(xpath = "//th[@class='tl-align-left sorting_asc']")
     public WebElement filterUserTypeNameInTableUserType;
 
+    @FindBy(xpath = "//tr[@role='row']")
+    public List<WebElement> rowsTableUserTypes;
+
+    @FindBy(xpath = "//td[@class=' tl-align-left']")
+    public List<WebElement> cellsNameTableUserTypes;
+
     @FindBy(xpath = "//i[@class='icon-remove icon-grid']")
     public List<WebElement> removeBtnUserTypesTable;
 
     @FindBy(xpath = "//div[@class='tl-table-operations-trigger touchable']")
     public List<WebElement> optionBtnUserTypesTable;
 
-    public UserTypesPage addUserTypeBtnClick() {
+    public void addUserTypeBtnClick() {
         webElementHelper.click(addUserTypeBtn);
-        return this;
     }
 
     public void saveBtnClick() {
@@ -94,7 +99,6 @@ public class UserTypesPage {
         saveBtnClick();
     }
 
-
     public boolean checkFilterUserTypeNameInTableUserType(List<String> beforeSortUserTypesName, List<String> afterSortUserTypesName) {
         Collections.sort(beforeSortUserTypesName);
 
@@ -123,18 +127,16 @@ public class UserTypesPage {
         return amountRows;
     }
 
-    public UserTypesPage fillUpNameUserType(String nameUserType) {
+    public void fillUpNameUserType(String nameUserType) {
         webElementHelper.sendKeys(nameUserTypeField, nameUserType);
-        return this;
     }
 
-    public UserTypesPage choiceUserTypes(int choice) {
+    public void choiceUserTypes(int choice) {
         fieldSelectUserType.click();
         listSelectUserTypes.get(choice).click();
-        return this;
     }
 
-    public UserTypesPage choosePermission(int choose){
+    public void choosePermission(int choose){
         switch (choose){
             case 0:
                 listPermissionCheckbox.get(0).click();
@@ -148,26 +150,21 @@ public class UserTypesPage {
                 listPermissionCheckbox.get(2).click();
                 permissionCheckboxGeneral.click();
                 break;
-
         }
-
-        return this;
     }
 
-    public static ArrayList<String> getRolesFromTable(WebDriver driver){
-        List<WebElement> rows = driver.findElements(By.xpath("//tr[@role='row']"));
+    public ArrayList<String> getRolesFromTable(WebDriver driver){
         String nameType;
 
         ArrayList<String> roles = new ArrayList<>();
-
         int step = 0;
 
-        for(WebElement row : rows){
-            if(step >= rows.size() - 1){
+        for(WebElement row : rowsTableUserTypes){
+            if(step >= rowsTableUserTypes.size() - 1){
                 break;
             }
-            List<WebElement> cells = row.findElements(By.xpath("//td[@class=' tl-align-left']"));
-            nameType = cells.get(step).getText();
+
+            nameType = cellsNameTableUserTypes.get(step).getText();
             step++;
             roles.add(nameType);
         }

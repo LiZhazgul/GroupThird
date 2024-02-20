@@ -97,5 +97,4 @@ public class UserTypesTest extends BaseTest {
 
         Assert.assertEquals(userTypesPage.checkFilterUserTypeNameInTableUserType(beforeSortUserTypesName, afterSortUserTypesName), true);
     }
-
 }
