@@ -129,7 +129,27 @@ public class UserTypePageTest {
         Assert.assertEquals(actualResult, expectedResult);
     }
 
+    @Test
+    @Feature("talentLMS User Types")
+    @Description("Filter check user type name table user type")
+    @Owner("Timur")
+    @Severity(SeverityLevel.MINOR)
+    @Story("TL-014")
+    @Tag("Smoke")
+    public void filterUserTypeNameInTableUserTypeTest(){
+        browserManager.openByNavigate("https://timka.talentlms.com/acl/index");
 
+        List<String> beforeSortUserTypesName = new ArrayList<>();
+        List<String> afterSortUserTypesName = new ArrayList<>();
+
+        beforeSortUserTypesName = userTypePage.getRolesFromTable(driver);
+
+        webElementHelper.click(userTypePage.filterUserTypeNameInTableUserType);
+
+        afterSortUserTypesName = userTypePage.getRolesFromTable(driver);
+
+        Assert.assertEquals(userTypePage.checkFilterUserTypeNameInTableUserType(beforeSortUserTypesName, afterSortUserTypesName), true);
+    }
 
     @AfterClass(alwaysRun = true)
     public void tearDown() {

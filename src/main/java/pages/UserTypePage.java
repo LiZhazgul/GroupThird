@@ -10,6 +10,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UserTypePage {
@@ -48,8 +49,8 @@ public class UserTypePage {
     @FindBy(xpath = "//span[@id='user-type-name-help-block']/span[@class='help-inline']")
     public WebElement warningTypeNameRepeated;
 
-
-
+    @FindBy(xpath = "//th[@class='tl-align-left sorting_asc']")
+    public WebElement filterUserTypeNameInTableUserType;
 
     public UserTypePage addUserTypeBtnClick() {
         webElementHelper.click(addUserTypeBtn);
@@ -65,6 +66,24 @@ public class UserTypePage {
         searchField.clear();
         searchField.sendKeys(Keys.ENTER);
         return this;
+    }
+
+    public boolean checkFilterUserTypeNameInTableUserType(List<String> beforeSortUserTypesName, List<String> afterSortUserTypesName) {
+        Collections.sort(beforeSortUserTypesName);
+
+        int countMatches = 0;
+
+        for(int i = 0; i < beforeSortUserTypesName.size(); i++){
+            if(beforeSortUserTypesName.get(i).equals(afterSortUserTypesName.get(i))){
+                countMatches++;
+            }
+        }
+
+        if(countMatches == afterSortUserTypesName.size()){
+            return true;
+        } else{
+            return false;
+        }
     }
 
     public int countingRowsInTable(List<String> listUserTypes, String searchWord) {
