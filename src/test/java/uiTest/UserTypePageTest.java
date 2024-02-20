@@ -5,47 +5,34 @@ import helper.BrowserManager;
 import helper.WebElementHelper;
 import io.qameta.allure.*;
 import io.qameta.allure.testng.Tag;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import pages.UserTypePage;
 import pages.LoginPage;
-import tables.TableRolesReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseTest {
+public class UserTypePageTest {
 
     protected WebDriver driver;
     protected WebElementHelper webElementHelper;
     protected LoginPage loginPage;
     protected BrowserManager browserManager;
-    protected String domain;
-    protected String userTypeName;
     protected UserTypePage userTypePage;
-    protected List<TableRolesReader> roles;
-    protected TableRolesReader role;
+    protected List<String> listUserTypes;
 
     @BeforeClass(alwaysRun = true, description = "Launch browser and log in on talentLMS website")
-    public void setUp() {
+    public void setUp() throws InterruptedException {
         driver = Driver.getDriver();
         browserManager = new BrowserManager(driver);
         webElementHelper = new WebElementHelper();
         loginPage = new LoginPage();
         userTypePage = new UserTypePage();
-
-        roles = new ArrayList<>();
-        role = new TableRolesReader();
-
-        domain = "timka";
-        userTypeName = "prob";
-        role.setNameTypes(userTypeName);
+        listUserTypes = new ArrayList<>();
 
         browserManager.openByNavigate("https://app.talentlms.com/login");
         /*loginPage.enterDomain("fall2023")
@@ -57,29 +44,38 @@ public class BaseTest {
                 .enterUsername("timka555-player@mail.ru")
                 .enterPassword("1Test8")
                 .clickLoginButton();
+
+        Thread.sleep(2000);
     }
 
+    @Test
     @Feature("talentLMS User Types")
     @Description("Adding a new role to a table")
     @Owner("Timur")
     @Severity(SeverityLevel.CRITICAL)
     @Story("TL-014")
     @Tag("Smoke")
-    public void addRoleUserInTableTest(){
+    public void addUserTypeInTableTest(){
+        browserManager.openByNavigate("https://timka.talentlms.com/acl/index");
+
+        String userTypeName = "testUserTypeName";
+
         int indexUserType = 2;
 
-        webElementHelper.click(userTypePage.addUserTypeBtn)
-                        .sendKeys(userTypePage.nameUserTypeField, userTypeName);
+        listUserTypes.clear();
 
-        userTypePage.randomChoiceUserTypes(indexUserType)
-                       .choosePermission()
-                       .saveBtn.click();
+        userTypePage.addUserTypeBtnClick()
+                    .fillUpNameUserType(userTypeName)
+                    .choiceUserTypes(indexUserType)
+                    .choosePermission()
+                    .saveBtnClick();
 
-        roles = TableRolesReader.getRolesFromTable(driver);
+        listUserTypes = userTypePage.getRolesFromTable(driver);
 
-        Assert.assertEquals(roles.contains(role), true);
+        Assert.assertEquals(listUserTypes.contains(userTypeName), true);
     }
 
+    @Test
     @Feature("talentLMS User Types")
     @Description("Checking the table information search string")
     @Owner("Timur")
@@ -87,27 +83,53 @@ public class BaseTest {
     @Story("TL-014")
     @Tag("Smoke")
     public void searchFieldTest() throws InterruptedException {
-        int amountElements = 0;
+        browserManager.openByNavigate("https://timka.talentlms.com/acl/index");
 
-        String searchWord = "tr";
+        String searchWord = "admin";
 
         webElementHelper.sendKeys(userTypePage.searchField, searchWord);
 
         Thread.sleep(1000);
 
-        roles = TableRolesReader.getRolesFromTable(driver);
+        listUserTypes = userTypePage.getRolesFromTable(driver);
 
-        for(int i = 0; i < roles.size(); i++){
-            if(roles.get(i).getNameTypes().toLowerCase().contains(searchWord.toLowerCase())){
-                amountElements++;
-            }
-        }
+        userTypePage.searchFieldClear();
 
-        userTypePage.searchField.clear();
-        userTypePage.searchField.sendKeys(Keys.ENTER);
-
-        Assert.assertEquals(amountElements == roles.size(), true);
+        Assert.assertEquals(userTypePage.countingRowsInTable(listUserTypes, searchWord) == listUserTypes.size(), true);
     }
+
+    @Test
+    @Feature("talentLMS User Types")
+    @Description("Checking when adding user type it must be unique")
+    @Owner("Timur")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("TL-014")
+    @Tag("Negative")
+    public void addDuplicateUserTypeInTableTest(){
+        browserManager.openByNavigate("https://timka.talentlms.com/acl/index");
+        String duplicateUserTypeName = "duplicate";
+
+        int indexUserType = 1;
+
+        userTypePage.addUserTypeBtnClick()
+                .fillUpNameUserType(duplicateUserTypeName)
+                .choiceUserTypes(indexUserType)
+                .choosePermission()
+                .saveBtnClick();
+
+        userTypePage.addUserTypeBtnClick()
+                .fillUpNameUserType(duplicateUserTypeName)
+                .choiceUserTypes(indexUserType)
+                .choosePermission()
+                .saveBtnClick();
+
+        String actualResult = userTypePage.warningTypeNameRepeated.getText().trim();
+        String expectedResult = "A user type with this name already exists";
+
+        Assert.assertEquals(actualResult, expectedResult);
+    }
+
+
 
     @AfterClass(alwaysRun = true)
     public void tearDown() {
