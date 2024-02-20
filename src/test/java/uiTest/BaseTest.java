@@ -20,7 +20,11 @@ import pages.AccountAndSettings.Gamification.BadgesBox;
 import pages.AccountAndSettings.Gamification.LevelsBox;
 import pages.AccountAndSettings.Gamification.RewardsBox;
 import pages.AccountAndSettings.Gamification.LeaderboardBox;
+import pages.UserTypesPage;
 import pages.Users.UsersPage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static pages.TalentLMS_PAGES.LOGIN;
 import static config.ConfigReader.getValue;
@@ -47,6 +51,8 @@ public class BaseTest {
     protected RewardsBox rewardsBox;
     protected LeaderboardBox leaderboardBox;
     protected UsersPage usersPage;
+    protected UserTypesPage userTypePage;
+    protected List<String> listUserTypes;
 
     @BeforeClass(alwaysRun = true)
     public void setUp(){
@@ -70,6 +76,8 @@ public class BaseTest {
         levelsBox = new LevelsBox();
         rewardsBox = new RewardsBox();
         leaderboardBox = new LeaderboardBox();
+        userTypePage = new UserTypesPage();
+        listUserTypes = new ArrayList<>();
         browserManager.openByNavigate(LOGIN.toString());
         loginPage.enterDomain(getValue("domain"))
                 .enterUsername(getValue("username"))
@@ -79,6 +87,6 @@ public class BaseTest {
 
     @AfterClass(alwaysRun = true)
     public void tearDown(){
-        Driver.closeDriver();
+        //Driver.closeDriver();
     }
 }

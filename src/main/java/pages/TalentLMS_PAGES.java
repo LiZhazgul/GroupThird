@@ -16,7 +16,11 @@ public enum TalentLMS_PAGES {
     STARTER_PLAN("https://fall2023.talentlms.com/account/subscription_selectplan/plan:starter-annual-c2022,mode:upgrade"),
     BASIC_PLAN("https://fall2023.talentlms.com/account/subscription_selectplan/plan:basic-annual-c2022,mode:upgrade"),
     PLUS_PLAN("https://fall2023.talentlms.com/account/subscription_selectplan/plan:plus-annual-c2022,mode:upgrade"),
-    PREMIUM_PLAN("https://fall2023.talentlms.com/account/subscription_selectplan/plan:premium-annual-c2022,mode:upgrade");
+    PREMIUM_PLAN("https://fall2023.talentlms.com/account/subscription_selectplan/plan:premium-annual-c2022,mode:upgrade"),
+
+    USER_TYPES_PAGE("https://fall2023.talentlms.com/acl/index"),
+    ADD_USER_TYPE_PAGE("https://fall2023.talentlms.com/acl/index");
+
     public final String URL;
 
     TalentLMS_PAGES(String URL){
